@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>የመደብር ማስተናገያ - ሰይፈ ልዩ በለጬ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a472a;
+            --secondary: #d4af37;
+            --danger: #dc3545;
+            --success: #28a745;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --light: #f8f9fa;
+            --dark: #343a40;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans Ethiopic', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary), #2d5a3d);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--secondary);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .shop-info {
+            margin-top: 15px;
+        }
+        
+        .shop-owner {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .shop-phone {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        /* Dashboard Layout */
+        .dashboard {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-top: 4px solid var(--primary);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card.pending { border-top-color: var(--warning); }
+        .stat-card.preparing { border-top-color: var(--info); }
+        .stat-card.onway { border-top-color: var(--secondary); }
+        .stat-card.delivered { border-top-color: var(--success); }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Orders Section */
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .orders-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-tab {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--dark);
+            transition: all 0.3s ease;
+        }
+        
+        .filter-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .filter-tab:hover:not(.active) {
+            border-color: var(--secondary);
+            background: #fffcf0;
+        }
+        
+        /* Orders Grid */
+        .orders-grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .order-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--warning);
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .order-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+        
+        .order-card.confirmed { border-left-color: var(--info); }
+        .order-card.preparing { border-left-color: #17a2b8; }
+        .order-card.ready { border-left-color: var(--secondary); }
+        .order-card.onway { border-left-color: #6c757d; }
+        .order-card.delivered { border-left-color: var(--success); }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .order-id {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .order-time {
+            background: #f8f9fa;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .customer-info {
+            margin-bottom: 15px;
+        }
+        
+        .customer-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .customer-phone {
+            color: var(--primary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .order-items {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 3px solid var(--secondary);
+        }
+        
+        .items-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .item-list {
+            list-style: none;
+        }
+        
+        .item-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .item-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-top: 2px solid #eee;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #2d5a3d;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: #212529;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-info {
+            background: var(--info);
+            color: white;
+        }
+        
+        /* Delivery Boys */
+        .delivery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .delivery-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--success);
+        }
+        
+        .delivery-card.busy { border-left-color: var(--warning); }
+        .delivery-card.offline { border-left-color: #ccc; }
+        
+        .delivery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .delivery-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+        
+        .delivery-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .status-available { background: #d4edda; color: #155724; }
+        .status-busy { background: #fff3cd; color: #856404; }
+        .status-offline { background: #e2e3e5; color: #383d41; }
+        
+        .delivery-details {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .delivery-details div {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Manual Order Entry */
+        .manual-order {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .delivery-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .order-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .filter-tabs {
+                flex-direction: column;
+            }
+        }
+        
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s ease;
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-left: 5px solid var(--info);
+            z-index: 1000;
+            max-width: 350px;
+            animation: slideIn 0.5s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .notification-success { border-left-color: var(--success); }
+        .notification-warning { border-left-color: var(--warning); }
+        .notification-error { border-left-color: var(--danger); }
+        
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+        
+        .notification-success .notification-icon { background: var(--success); }
+        .notification-warning .notification-icon { background: var(--warning); }
+        .notification-error .notification-icon { background: var(--danger); }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-store"></i>
+            <h1>ሰይፈ ልዩ በለጬ - መደብር</h1>
+        </div>
+        <div class="shop-info">
+            <div class="shop-owner">ሰይፈ መለስ</div>
+            <div class="shop-phone">+251 939 86 91 81</div>
+        </div>
+    </header>
+    
+    <!-- Dashboard -->
+    <div class="dashboard">
+        <!-- Stats -->
+        <div class="stats-container">
+            <div class="stat-card pending">
+                <div class="stat-value" id="pendingCount">0</div>
+                <div class="stat-label">
+                    <i class="fas fa-clock"></i>
+                    አዲስ ትእዛዝ
+                </div>
+            </div>
+            
+            <div class="stat-card preparing">
+                <div class="stat-value" id="preparingCount">0</div>
+                <div class="stat-label">
+                    <i class="fas fa-utensils"></i>
+                    በማዘጋጀት ላይ
+                </div>
+            </div>
+            
+            <div class="stat-card onway">
+                <div class="stat-value" id="onwayCount">0</div>
+                <div class="stat-label">
+                    <i class="fas fa-motorcycle"></i>
+                    በመንገድ ላይ
+                </div>
+            </div>
+            
+            <div class="stat-card delivered">
+                <div class="stat-value" id="deliveredCount">0</div>
+                <div class="stat-label">
+                    <i class="fas fa-check-circle"></i>
+                    የተደረሱ
+                </div>
+            </div>
+        </div>
+        
+        <!-- Manual Order Entry -->
+        <div class="manual-order">
+            <h2 class="section-title">
+                <i class="fas fa-plus-circle"></i>
+                አዲስ ትእዛዝ ያስገቡ
+            </h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="customerName">የደንበኛ ስም</label>
+                    <input type="text" id="customerName" class="form-control" placeholder="ስም">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="customerPhone">ስልክ ቁጥር</label>
+                    <input type="tel" id="customerPhone" class="form-control" placeholder="0912345678">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="customerAddress">የመላኪያ አድራሻ</label>
+                <input type="text" id="customerAddress" class="form-control" placeholder="አድራሻ">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="orderItems">የትእዛዝ እቃዎች</label>
+                <textarea id="orderItems" class="form-control" rows="3" placeholder="ምሳሌ: ገለምሶ (ሙሉ) x1, ኮካኮላ x2"></textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="orderTotal">ጠቅላላ ዋጋ (ብር)</label>
+                    <input type="number" id="orderTotal" class="form-control" placeholder="470">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="orderNotes">ልዩ አስተያየት</label>
+                    <input type="text" id="orderNotes" class="form-control" placeholder="ከሆነ...">
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="addManualOrder()" style="width: 100%; padding: 15px;">
+                <i class="fas fa-plus"></i> ትእዛዝ ያስገቡ
+            </button>
+        </div>
+        
+        <!-- Orders -->
+        <h2 class="section-title">
+            <i class="fas fa-shopping-cart"></i>
+            ሁሉም ትእዛዞች
+        </h2>
+        
+        <div class="filter-tabs">
+            <div class="filter-tab active" data-filter="all">ሁሉም</div>
+            <div class="filter-tab" data-filter="pending">አዲስ</div>
+            <div class="filter-tab" data-filter="preparing">በማዘጋጀት</div>
+            <div class="filter-tab" data-filter="onway">በመንገድ</div>
+            <div class="filter-tab" data-filter="delivered">የተደረሱ</div>
+        </div>
+        
+        <div class="orders-container">
+            <div class="orders-grid" id="ordersGrid">
+                <!-- Orders will be loaded here -->
+            </div>
+            
+            <div class="empty-state" id="emptyOrders">
+                <i class="fas fa-shopping-cart"></i>
+                <h3>ምንም ትእዛዝ የለም</h3>
+                <p>ከደንበኞች የሚመጡ ትእዛዞችን ይጠብቁ</p>
+            </div>
+        </div>
+        
+        <!-- Delivery Boys -->
+        <h2 class="section-title">
+            <i class="fas fa-motorcycle"></i>
+            የመላኪያ ሰራተኞች
+        </h2>
+        
+        <div class="delivery-grid" id="deliveryGrid">
+            <!-- Delivery boys will be loaded here -->
+        </div>
+    </div>
+    
+    <script>
+        // Sample data - In real app, this would be from Firebase
+        let orders = JSON.parse(localStorage.getItem('shop_orders')) || [];
+        const deliveryBoys = [
+            {
+                id: 1,
+                name: "አብዱሬ",
+                phone: "0948 00 23 20",
+                status: "available", // available, busy, offline
+                currentOrder: null,
+                earningsToday: 540,
+                completedToday: 3
+            },
+            {
+                id: 2,
+                name: "ሀብታሙ",
+                phone: "0911 67 53 57",
+                status: "available",
+                currentOrder: null,
+                earningsToday: 420,
+                completedToday: 2
+            },
+            {
+                id: 3,
+                name: "እንዳልክ",
+                phone: "0972 25 50 415",
+                status: "available",
+                currentOrder: null,
+                earningsToday: 380,
+                completedToday: 2
+            }
+        ];
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrders();
+            loadDeliveryBoys();
+            setupFilterTabs();
+            updateStats();
+            
+            // Check for new orders periodically
+            setInterval(checkForNewOrders, 10000);
+            
+            // Simulate incoming orders
+            setTimeout(simulateIncomingOrder, 3000);
+        });
+        
+        function loadOrders() {
+            const ordersGrid = document.getElementById('ordersGrid');
+            const emptyOrders = document.getElementById('emptyOrders');
+            
+            if (orders.length === 0) {
+                ordersGrid.innerHTML = '';
+                emptyOrders.style.display = 'block';
+                return;
+            }
+            
+            ordersGrid.innerHTML = '';
+            emptyOrders.style.display = 'none';
+            
+            // Sort by newest first
+            const sortedOrders = [...orders].sort((a, b) => b.id - a.id);
+            
+            sortedOrders.forEach(order => {
+                const orderCard = createOrderCard(order);
+                ordersGrid.appendChild(orderCard);
+            });
+        }
+        
+        function createOrderCard(order) {
+            const card = document.createElement('div');
+            card.className = `order-card slide-in ${order.status}`;
+            card.id = `order-${order.id}`;
+            
+            card.innerHTML = `
+                <div class="order-header">
+                    <div class="order-id">ትእዛዝ #${order.id}</div>
+                    <div class="order-time">${order.time}</div>
+                </div>
+                
+                <div class="customer-info">
+                    <div class="customer-name">${order.customer}</div>
+                    <div class="customer-phone">
+                        <i class="fas fa-phone"></i> ${formatPhone(order.phone)}
+                    </div>
+                </div>
+                
+                <div style="margin: 10px 0; color: #666;">
+                    <i class="fas fa-map-marker-alt"></i> ${order.address}
+                </div>
+                
+                <div class="order-items">
+                    <div class="items-title">የትእዛዝ እቃዎች</div>
+                    <ul class="item-list">
+                        ${order.items.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                ${order.notes ? `
+                <div style="background: #fff3cd; padding: 12px; border-radius: 6px; margin: 10px 0; border-left: 3px solid var(--warning);">
+                    <i class="fas fa-info-circle"></i> ${order.notes}
+                </div>
+                ` : ''}
+                
+                <div class="order-total">
+                    <span>ጠቅላላ ዋጋ</span>
+                    <span>${order.total} ብር</span>
+                </div>
+                
+                <div class="action-buttons">
+                    ${getActionButtons(order.status, order.id)}
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        function getActionButtons(status, orderId) {
+            switch(status) {
+                case 'pending':
+                    return `
+                        <button class="btn btn-success" onclick="confirmOrder(${orderId})">
+                            <i class="fas fa-check"></i> አረጋግጥ
+                        </button>
+                        <button class="btn btn-danger" onclick="cancelOrder(${orderId})">
+                            <i class="fas fa-times"></i> አትቀበል
+                        </button>
+                        <button class="btn btn-info" onclick="callCustomer(${orderId})">
+                            <i class="fas fa-phone"></i> ደውል
+                        </button>
+                    `;
+                case 'confirmed':
+                    return `
+                        <button class="btn btn-primary" onclick="startPreparing(${orderId})">
+                            <i class="fas fa-utensils"></i> ጀምር
+                        </button>
+                        <button class="btn btn-info" onclick="callCustomer(${orderId})">
+                            <i class="fas fa-phone"></i> ደውል
+                        </button>
+                    `;
+                case 'preparing':
+                    return `
+                        <button class="btn btn-warning" onclick="markAsReady(${orderId})">
+                            <i class="fas fa-check-circle"></i> ዝግጁ ነው
+                        </button>
+                        <button class="btn btn-info" onclick="callCustomer(${orderId})">
+                            <i class="fas fa-phone"></i> ደውል
+                        </button>
+                    `;
+                case 'ready':
+                    return `
+                        <button class="btn btn-primary" onclick="assignDelivery(${orderId})">
+                            <i class="fas fa-motorcycle"></i> ላክ
+                        </button>
+                        <button class="btn btn-info" onclick="callCustomer(${orderId})">
+                            <i class="fas fa-phone"></i> ደውል
+                        </button>
+                    `;
+                case 'onway':
+                    return `
+                        <button class="btn btn-success" onclick="markAsDelivered(${orderId})">
+                            <i class="fas fa-check-double"></i> ደረሰ
+                        </button>
+                        <button class="btn btn-info" onclick="callCustomer(${orderId})">
+                            <i class="fas fa-phone"></i> ደውል
+                        </button>
+                    `;
+                default:
+                    return `
+                        <button class="btn" onclick="viewOrderDetails(${orderId})">
+                            <i class="fas fa-eye"></i> ዝርዝር
+                        </button>
+                    `;
+            }
+        }
+        
+        function addManualOrder() {
+            const customerName = document.getElementById('customerName').value.trim();
+            const customerPhone = document.getElementById('customerPhone').value.trim();
+            const customerAddress = document.getElementById('customerAddress').value.trim();
+            const orderItems = document.getElementById('orderItems').value.trim();
+            const orderTotal = document.getElementById('orderTotal').value.trim();
+            const orderNotes = document.getElementById('orderNotes').value.trim();
+            
+            if (!customerName || !customerPhone || !customerAddress || !orderItems || !orderTotal) {
+                showNotification('እባክዎ ሁሉንም መስኮች ይሙሉ', 'error');
+                return;
+            }
+            
+            const newOrder = {
+                id: orders.length > 0 ? Math.max(...orders.map(o => o.id)) + 1 : 1001,
+                customer: customerName,
+                phone: customerPhone,
+                address: customerAddress,
+                items: orderItems.split(',').map(item => item.trim()),
+                total: orderTotal + ' ብር',
+                notes: orderNotes,
+                status: 'pending',
+                time: new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'})
+            };
+            
+            orders.unshift(newOrder);
+            saveOrders();
+            
+            // Clear form
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerPhone').value = '';
+            document.getElementById('customerAddress').value = '';
+            document.getElementById('orderItems').value = '';
+            document.getElementById('orderTotal').value = '';
+            document.getElementById('orderNotes').value = '';
+            
+            // Reload orders
+            loadOrders();
+            updateStats();
+            
+            // Show notification
+            showNotification(`ትእዛዝ #${newOrder.id} ተጨምሯል`, 'success');
+            
+            // Send WhatsApp to customer (optional)
+            const customerMessage = `ሰላም ${customerName}፣ ትእዛዝዎ ተቀብለናል! ትእዛዝ #${newOrder.id}
+ጠቅላላ ዋጋ: ${orderTotal} ብር
+ይህን ማረጋገጫ በዋትስአፕ ለመላክ ይህንን ማድረጊያ ይንኩ: `;
+            
+            // Auto open WhatsApp to send confirmation
+            setTimeout(() => {
+                if (confirm('ለደንበኛው የዋትስአፕ ማረጋገጫ መላክ ይፈልጋሉ?')) {
+                    window.open(`https://wa.me/${customerPhone.replace('+', '')}?text=${encodeURIComponent(customerMessage)}`, '_system');
+                }
+            }, 1000);
+        }
+        
+        function confirmOrder(orderId) {
+            updateOrderStatus(orderId, 'confirmed');
+            showNotification(`ትእዛዝ #${orderId} ተረጋግጧል`, 'success');
+        }
+        
+        function cancelOrder(orderId) {
+            if (confirm('ይህን ትእዛዝ ማሰርዝ ይፈልጋሉ?')) {
+                updateOrderStatus(orderId, 'cancelled');
+                showNotification(`ትእዛዝ #${orderId} ተሰርዟል`, 'error');
+            }
+        }
+        
+        function startPreparing(orderId) {
+            updateOrderStatus(orderId, 'preparing');
+            showNotification(`ትእዛዝ #${orderId} ማዘጋጀት ተጀምሯል`, 'success');
+        }
+        
+        function markAsReady(orderId) {
+            updateOrderStatus(orderId, 'ready');
+            showNotification(`ትእዛዝ #${orderId} ለመላክ ዝግጁ ነው`, 'success');
+        }
+        
+        function assignDelivery(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            const availableBoys = deliveryBoys.filter(boy => boy.status === 'available');
+            
+            if (availableBoys.length === 0) {
+                showNotification('ምንም የመላኪያ ሰራተኞች አልተገኙም', 'error');
+                return;
+            }
+            
+            const assignHTML = `
+                <div style="padding: 20px; max-width: 500px;">
+                    <h3 style="color: var(--primary); margin-bottom: 20px;">መላኪያ ሰራተኛ መርጠው ያስገቡ</h3>
+                    
+                    <div style="display: grid; gap: 15px;">
+                        ${availableBoys.map(boy => `
+                            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border: 2px solid #e9ecef; cursor: pointer; transition: all 0.3s;"
+                                 onclick="assignToDeliveryBoy(${orderId}, ${boy.id})">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <div style="font-weight: 600; font-size: 1.1rem;">${boy.name}</div>
+                                        <div style="color: #666; font-size: 0.9rem;">${boy.phone}</div>
+                                    </div>
+                                    <div style="background: #d4edda; color: #155724; padding: 5px 10px; border-radius: 15px; font-size: 0.85rem;">
+                                        ለትእዛዝ ዝግጁ
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <button onclick="closeDialog()" class="btn" style="width: 100%; margin-top: 20px; padding: 12px;">
+                        አትቀበል
+                    </button>
+                </div>
+            `;
+            
+            showDialog('መላኪያ ሰራተኛ ምረጥ', assignHTML);
+        }
+        
+        function assignToDeliveryBoy(orderId, boyId) {
+            const order = orders.find(o => o.id === orderId);
+            const boy = deliveryBoys.find(b => b.id === boyId);
+            
+            if (!order || !boy) return;
+            
+            // Update order
+            updateOrderStatus(orderId, 'onway');
+            
+            // Update delivery boy status
+            boy.status = 'busy';
+            boy.currentOrder = orderId;
+            
+            // Close dialog
+            closeDialog();
+            
+            // Show notification
+            showNotification(`ትእዛዝ #${orderId} ለ${boy.name} ተመድቧል`, 'success');
+            
+            // Send WhatsApp to delivery boy
+            const deliveryMessage = `ሰላም ${boy.name}፣ አዲስ ትእዛዝ አለዎት!
+ትእዛዝ #${orderId}
+ደንበኛ: ${order.customer}
+ስልክ: ${order.phone}
+አድራሻ: ${order.address}
+ጠቅላላ: ${order.total}
+እባክዎ ለመውሰድ ወደ መደብሩ ይምጡ።`;
+            
+            setTimeout(() => {
+                window.open(`https://wa.me/${boy.phone.replace(/\s/g, '')}?text=${encodeURIComponent(deliveryMessage)}`, '_system');
+            }, 1500);
+        }
+        
+        function markAsDelivered(orderId) {
+            if (confirm('ትእዛዙ ተወስዷል?')) {
+                updateOrderStatus(orderId, 'delivered');
+                showNotification(`ትእዛዝ #${orderId} እንደተደረሰ ምዝግብ ተደርጓል`, 'success');
+                
+                // Free up delivery boy
+                const order = orders.find(o => o.id === orderId);
+                if (order && order.assignedTo) {
+                    const boy = deliveryBoys.find(b => b.id === order.assignedTo);
+                    if (boy) {
+                        boy.status = 'available';
+                        boy.currentOrder = null;
+                        boy.completedToday += 1;
+                        boy.earningsToday += parseInt(order.total) * 0.15; // 15% delivery fee
+                        loadDeliveryBoys();
+                    }
+                }
+            }
+        }
+        
+        function callCustomer(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (order && order.phone) {
+                window.open(`tel:${order.phone}`, '_system');
+            }
+        }
+        
+        function updateOrderStatus(orderId, newStatus) {
+            const orderIndex = orders.findIndex(o => o.id === orderId);
+            if (orderIndex !== -1) {
+                orders[orderIndex].status = newStatus;
+                orders[orderIndex].updatedAt = new Date().toLocaleTimeString();
+                saveOrders();
+                loadOrders();
+                updateStats();
+            }
+        }
+        
+        function saveOrders() {
+            localStorage.setItem('shop_orders', JSON.stringify(orders));
+        }
+        
+        function loadDeliveryBoys() {
+            const deliveryGrid = document.getElementById('deliveryGrid');
+            deliveryGrid.innerHTML = '';
+            
+            deliveryBoys.forEach(boy => {
+                const card = document.createElement('div');
+                card.className = `delivery-card ${boy.status}`;
+                
+                card.innerHTML = `
+                    <div class="delivery-header">
+                        <div class="delivery-name">${boy.name}</div>
+                        <div class="delivery-status status-${boy.status}">
+                            ${boy.status === 'available' ? 'ለትእዛዝ ዝግጁ' : 
+                              boy.status === 'busy' ? 'በስራ ላይ' : 'ኦፍላይን'}
+                        </div>
+                    </div>
+                    
+                    <div class="delivery-details">
+                        <div>
+                            <i class="fas fa-phone"></i>
+                            <span>${boy.phone}</span>
+                        </div>
+                        <div>
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>ዛሬ የደረሰ: ${boy.completedToday} ትእዛዞች</span>
+                        </div>
+                        <div>
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span>ዛሬ ገቢ: ${boy.earningsToday} ብር</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <button class="btn btn-primary" onclick="callDeliveryBoy('${boy.phone}')" style="flex: 1;">
+                            <i class="fas fa-phone"></i> ደውል
+                        </button>
+                        <button class="btn btn-success" onclick="messageDeliveryBoy('${boy.phone}')" style="flex: 1;">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </button>
+                    </div>
+                `;
+                
+                deliveryGrid.appendChild(card);
+            });
+        }
+        
+        function callDeliveryBoy(phone) {
+            window.open(`tel:${phone}`, '_system');
+        }
+        
+        function messageDeliveryBoy(phone) {
+            window.open(`https://wa.me/${phone.replace(/\s/g, '')}`, '_system');
+        }
+        
+        function updateStats() {
+            const pending = orders.filter(o => o.status === 'pending').length;
+            const preparing = orders.filter(o => o.status === 'preparing' || o.status === 'confirmed').length;
+            const onway = orders.filter(o => o.status === 'onway' || o.status === 'ready').length;
+            const delivered = orders.filter(o => o.status === 'delivered').length;
+            
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('preparingCount').textContent = preparing;
+            document.getElementById('onwayCount').textContent = onway;
+            document.getElementById('deliveredCount').textContent = delivered;
+        }
+        
+        function setupFilterTabs() {
+            const tabs = document.querySelectorAll('.filter-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    filterOrders(filter);
+                });
+            });
+        }
+        
+        function filterOrders(filter) {
+            const orderCards = document.querySelectorAll('.order-card');
+            
+            orderCards.forEach(card => {
+                if (filter === 'all' || card.classList.contains(filter)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        function formatPhone(phone) {
+            return phone.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
+        }
+        
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            
+            notification.innerHTML = `
+                <div class="notification-icon">
+                    <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation' : 'info'}"></i>
+                </div>
+                <div>${message}</div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 3000);
+        }
+        
+        function showDialog(title, content) {
+            // Close any existing dialog
+            closeDialog();
+            
+            const dialog = document.createElement('div');
+            dialog.id = 'customDialog';
+            dialog.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 2000;
+                padding: 20px;
+            `;
+            
+            const dialogContent = document.createElement('div');
+            dialogContent.style.cssText = `
+                background: white;
+                border-radius: 12px;
+                width: 100%;
+                max-width: 500px;
+                max-height: 90vh;
+                overflow-y: auto;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            `;
+            
+            dialogContent.innerHTML = `
+                <div style="background: var(--primary); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
+                    <h3 style="margin: 0;">${title}</h3>
+                </div>
+                <div>${content}</div>
+            `;
+            
+            dialog.appendChild(dialogContent);
+            document.body.appendChild(dialog);
+        }
+        
+        function closeDialog() {
+            const dialog = document.getElementById('customDialog');
+            if (dialog) {
+                dialog.remove();
+            }
+        }
+        
+        function checkForNewOrders() {
+            // In real app, this would check Firebase or API
+            // For demo, we do nothing
+        }
+        
+        function simulateIncomingOrder() {
+            // Add a sample order for testing
+            const sampleCustomers = ['አለማየሁ ገብረማሪያም', 'ማርያም አለማየሁ', 'ተስፋዬ መኮንን', 'ደረበው አለማየሁ'];
+            const sampleItems = [
+                ['ገለምሶ (ሙሉ) x1', 'ኮካኮላ x2'],
+                ['ልዩ (ግማሽ) x1', 'ፔፕሲ x1'],
+                ['መጥቾ (ሙሉ) x1', 'ፕሪዴተር x1'],
+                ['ንቅል x1', 'ስፕራይት x1']
+            ];
+            const sampleAddresses = ['ሰላም በር ኮንዶ', 'ሰሚት ኮንዶ', 'ቦሌ ሮድ', 'መካከለኛ አካባቢ'];
+            
+            const randomIndex = Math.floor(Math.random() * sampleCustomers.length);
+            
+            const newOrder = {
+                id: orders.length > 0 ? Math.max(...orders.map(o => o.id)) + 1 : 1001,
+                customer: sampleCustomers[randomIndex],
+                phone: '09' + Math.floor(10000000 + Math.random() * 90000000),
+                address: sampleAddresses[randomIndex],
+                items: sampleItems[randomIndex],
+                total: (200 + Math.floor(Math.random() * 800)) + ' ብር',
+                notes: Math.random() > 0.7 ? 'በመግናኛ ቦታ ይጠብቁ' : '',
+                status: 'pending',
+                time: new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'})
+            };
+            
+            orders.unshift(newOrder);
+            saveOrders();
+            loadOrders();
+            updateStats();
+            
+            showNotification(`አዲስ ትእዛዝ #${newOrder.id} ተጨምሯል!`, 'success');
+        }
+        
+        // Auto-simulate orders every 2 minutes for demo
+        setInterval(() => {
+            if (Math.random() > 0.7) { // 30% chance
+                simulateIncomingOrder();
+            }
+        }, 120000);
+    </script>
+</body>
+</html>
